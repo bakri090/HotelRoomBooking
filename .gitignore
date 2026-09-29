@@ -1,0 +1,60 @@
+# Build outputs
+bin/
+obj/
+dist/
+artifacts/
+
+# .NET user-specific files
+*.user
+*.suo
+
+# Visual Studio cache
+.vs/
+.vscode/
+.idea/
+
+# Visual Studio
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+
+# Created by dotnet new
+*.swp
+*.*~
+project.lock.json
+
+# Serilog / logs
+Logs/
+logs/
+*.log
+
+# User secrets handled via dotnet user-secrets (never committed)
+
+# Local image storage / uploads
+src/API/Booking_API/wwwroot/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Development settings
+**/appsettings.Development.json
+
+# Logs
+*.log
+
+# Node / Angular
+node_modules/
+.angular/
+*.tsbuildinfo
+
+# Test results
+TestResults/
+coverage/
+
+
+# OS files
+.DS_Store
+Thumbs.db
