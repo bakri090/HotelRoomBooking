@@ -75,29 +75,29 @@ public static class DatabaseSeeder
 
     private static (List<Hotel> Hotels, List<Room> Rooms) BuildHotels(Guid ownerId)
     {
-        var seedHotels = new (string Name, string Description, string Address, string City, string Country, int StarRating, decimal Latitude, decimal Longitude)[]
+var seedHotels = new (string Name, string Description, string Address, string City, string Country, int StarRating)[]
         {
-            ("Grand Cairo Palace", "A luxurious five-star hotel in the heart of Cairo with panoramic Nile views.", "15 Tahrir Square", "Cairo", "Egypt", 5, 30.0444m, 31.2357m),
-            ("Nile View Suites", "Modern suites overlooking the Nile with a rooftop restaurant.", "8 Corniche El Nil", "Cairo", "Egypt", 4, 30.0561m, 31.2194m),
-            ("Pyramids Oasis Resort", "Resort with direct views of the Great Pyramids and private pools.", "1 Pyramids Road", "Giza", "Egypt", 5, 29.9870m, 31.1318m),
-            ("Sphinx City Lodge", "Budget-friendly lodge near Giza with friendly service.", "12 Al Haram Street", "Giza", "Egypt", 2, 30.0131m, 31.2089m),
-            ("Alexandria Corniche Hotel", "Seafront hotel on the famous Corniche with Mediterranean views.", "Corniche Road", "Alexandria", "Egypt", 4, 31.2001m, 29.9187m),
-            ("Sharm Sunset Beach Resort", "All-inclusive beach resort in Naama Bay, Sharm El-Sheikh.", "Naama Bay", "Sharm El-Sheikh", "Egypt", 5, 27.9158m, 34.3300m),
-            ("Red Sea Pearl", "Diving-friendly hotel steps away from the Red Sea coastline.", "El Mamsha", "Hurghada", "Egypt", 4, 27.2579m, 33.8116m),
-            ("El Gouna Lagoon Villas", "Villas and suites along the lagoons of El Gouna.", "Downtown El Gouna", "Hurghada", "Egypt", 5, 27.3940m, 33.6780m),
-            ("Luxor Temple Inn", "Charming hotel within walking distance of Karnak Temple.", "Karnak Street", "Luxor", "Egypt", 3, 25.6872m, 32.6396m),
-            ("Aswan Nile Dreams", "Relaxing hotel on Elephantine Island in Aswan.", "Elephantine Island", "Aswan", "Egypt", 4, 24.0889m, 32.8858m),
-            ("Aswan South Retreat", "Serene retreat near the High Dam with garden views.", "Abu Simbel Road", "Aswan", "Egypt", 3, 23.9696m, 32.9494m),
-            ("Marina Siwa Camp", "Eco-camp nestled amid Siwa's palm groves and salt lakes.", "Siwa Oasis", "Siwa", "Egypt", 3, 29.2032m, 25.5197m),
-            ("Delta Business Hotel", "Practical hotel for business travellers in the Nile Delta.", "El Geish Street", "Tanta", "Egypt", 3, 30.7865m, 31.0004m),
-            ("Dahab Blue House", "Colourful guesthouse by the Dahab boardwalk.", "Lighthouse Area", "Dahab", "Egypt", 3, 28.5071m, 34.5140m),
-            ("Marsa Alam Coral Bay", "Eco-friendly resort near pristine coral reefs.", "Abu Dabbab Bay", "Marsa Alam", "Egypt", 4, 25.1902m, 34.7960m)
+            ("Grand Cairo Palace", "A luxurious five-star hotel in the heart of Cairo with panoramic Nile views.", "15 Tahrir Square", "Cairo", "Egypt", 5),
+            ("Nile View Suites", "Modern suites overlooking the Nile with a rooftop restaurant.", "8 Corniche El Nil", "Cairo", "Egypt", 4),
+            ("Pyramids Oasis Resort", "Resort with direct views of the Great Pyramids and private pools.", "1 Pyramids Road", "Giza", "Egypt", 5),
+            ("Sphinx City Lodge", "Budget-friendly lodge near Giza with friendly service.", "12 Al Haram Street", "Giza", "Egypt", 2),
+            ("Alexandria Corniche Hotel", "Seafront hotel on the famous Corniche with Mediterranean views.", "Corniche Road", "Alexandria", "Egypt", 4),
+            ("Sharm Sunset Beach Resort", "All-inclusive beach resort in Naama Bay, Sharm El-Sheikh.", "Naama Bay", "Sharm El-Sheikh", "Egypt", 5),
+            ("Red Sea Pearl", "Diving-friendly hotel steps away from the Red Sea coastline.", "El Mamsha", "Hurghada", "Egypt", 4),
+            ("El Gouna Lagoon Villas", "Villas and suites along the lagoons of El Gouna.", "Downtown El Gouna", "Hurghada", "Egypt", 5),
+            ("Luxor Temple Inn", "Charming hotel within walking distance of Karnak Temple.", "Karnak Street", "Luxor", "Egypt", 3),
+            ("Aswan Nile Dreams", "Relaxing hotel on Elephantine Island in Aswan.", "Elephantine Island", "Aswan", "Egypt", 4),
+            ("Aswan South Retreat", "Serene retreat near the High Dam with garden views.", "Abu Simbel Road", "Aswan", "Egypt", 3),
+            ("Marina Siwa Camp", "Eco-camp nestled amid Siwa's palm groves and salt lakes.", "Siwa Oasis", "Siwa", "Egypt", 3),
+            ("Delta Business Hotel", "Practical hotel for business travellers in the Nile Delta.", "El Geish Street", "Tanta", "Egypt", 3),
+            ("Dahab Blue House", "Colourful guesthouse by the Dahab boardwalk.", "Lighthouse Area", "Dahab", "Egypt", 3),
+            ("Marsa Alam Coral Bay", "Eco-friendly resort near pristine coral reefs.", "Abu Dabbab Bay", "Marsa Alam", "Egypt", 4)
         };
 
         var hotels = new List<Hotel>();
         var rooms = new List<Room>();
 
-        foreach (var (name, description, address, city, country, starRating, latitude, longitude) in seedHotels)
+        foreach (var (name, description, address, city, country, starRating) in seedHotels)
         {
             hotels.Add(new Hotel
             {
@@ -108,8 +108,6 @@ public static class DatabaseSeeder
                 Address = address,
                 City = city,
                 Country = country,
-                Latitude = latitude,
-                Longitude = longitude,
                 StarRating = starRating,
                 CheckInTime = new TimeOnly(14, 0),
                 CheckOutTime = new TimeOnly(18, 0),

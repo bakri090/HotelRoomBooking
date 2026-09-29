@@ -7,7 +7,7 @@ builder.Services.AddDependencies(builder.Configuration);
 
 var app = builder.Build();
 
-await DatabaseSeeder.SeedAsync(app.Services);
+//await DatabaseSeeder.SeedAsync(app.Services);
 
 
 if (app.Environment.IsDevelopment())

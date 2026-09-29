@@ -31,12 +31,6 @@ public class HotelConfiguration : IEntityTypeConfiguration<Hotel>
             .IsRequired()
             .HasMaxLength(100);
 
-        builder.Property(h => h.Latitude)
-            .HasPrecision(9, 6);
-
-        builder.Property(h => h.Longitude)
-            .HasPrecision(9, 6);
-
         builder.Property(h => h.StarRating)
             .IsRequired();
 
