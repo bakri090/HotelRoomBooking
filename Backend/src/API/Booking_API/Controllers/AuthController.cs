@@ -4,7 +4,6 @@ using Booking.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Text.Json;
 
 namespace Booking_API.Controllers;
 
@@ -42,10 +41,7 @@ public class AuthController(IAuthService authService) : ControllerBase
     [HttpGet("me")]
     public IActionResult Me()
     {
-        var rolesClaim = User.FindFirst("roles")?.Value;
-        var roles = rolesClaim is null
-            ? Enumerable.Empty<string>()
-            : JsonSerializer.Deserialize<List<string>>(rolesClaim) ?? [];
+        var roles = User.FindAll(ClaimTypes.Role).Select(c => c.Value);
 
         return Ok(new
         {

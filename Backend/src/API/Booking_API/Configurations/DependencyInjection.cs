@@ -1,3 +1,4 @@
+using Booking.Api.Authorization;
 using Booking.Application.DTOs.Auth;
 using Booking.Application.Interfaces;
 using Booking.Infrastructure.Auth;
@@ -8,6 +9,7 @@ using Booking.Infrastructure.Services;
 using FluentValidation;
 using Mapster;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -78,6 +80,7 @@ public static class DependencyInjection
         })
         .AddJwtBearer(options =>
         {
+          options.TokenValidationParameters.RoleClaimType = "role";
             options.TokenValidationParameters = new TokenValidationParameters
             {
                 ValidateIssuer = true,
@@ -104,8 +107,8 @@ public static class DependencyInjection
         services.AddScoped<IHotelService, HotelService>();
         services.AddScoped<IRoomRepository, RoomRepository>();
         services.AddScoped<IRoomService, RoomService>();
-
-        return services;
+		  services.AddSingleton<IAuthorizationMiddlewareResultHandler,CustomAuthorizationMiddlewareResultHandler>();
+		return services;
     }
 
     private static IServiceCollection AddFluentValidationConf(this IServiceCollection services)

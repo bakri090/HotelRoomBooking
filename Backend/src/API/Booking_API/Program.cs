@@ -1,5 +1,4 @@
 using Booking_API.Configurations;
-using Booking.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 

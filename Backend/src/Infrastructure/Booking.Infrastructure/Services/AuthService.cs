@@ -39,7 +39,7 @@ public class AuthService : IAuthService
     {
         var user = new ApplicationUser
         {
-            UserName = request.Email,
+            UserName = request.Email.Substring(0, request.Email.IndexOf('@')),
             Email = request.Email,
             FirstName = request.FirstName,
             LastName = request.LastName

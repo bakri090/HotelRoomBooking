@@ -14,19 +14,32 @@ public class MappingConfig : IRegister
 
 		config.NewConfig<Hotel, HotelResponse>();
 		config.NewConfig<CreateHotelRequest, Hotel>();
-		config.NewConfig<UpdateHotelRequest, Hotel>();
 
-		config.NewConfig<Room, RoomResponse>();
+		config.NewConfig<UpdateHotelRequest, Hotel>()
+				.Ignore(d => d.Id)
+				.Ignore(d => d.OwnerId)
+				.Ignore(d => d.IsActive)
+				.Ignore(d => d.CreatedAt);
+
+		config.NewConfig<Room, RoomResponse>()
+				.Map(d => d.Description, s => s.Description ?? string.Empty);
+
 		config.NewConfig<CreateRoomRequest, Room>()
-			.Map(dest => dest.Description, src => src.Description ?? string.Empty);
-		config.NewConfig<UpdateRoomRequest, Room>()
-			.Map(dest => dest.Description, src => src.Description ?? string.Empty);
+				.Map(d => d.Description, s => s.Description ?? string.Empty)
+				.Ignore(d => d.Id)
+				.Ignore(d => d.HotelId)
+				.Ignore(d => d.Hotel)
+				.Ignore(d => d.IsActive)
+				.Ignore(d => d.CreatedAt)
+				.Ignore(d => d.UpdatedAt);
 
-		TypeAdapterConfig<UpdateHotelRequest, Hotel>
-				.NewConfig()
-				.Ignore(dest => dest.Id)
-				.Ignore(dest => dest.OwnerId)
-				.Ignore(dest => dest.IsActive)
-				.Ignore(dest => dest.CreatedAt);
+		config.NewConfig<UpdateRoomRequest, Room>()
+				.Map(d => d.Description, s => s.Description ?? string.Empty)
+				.Ignore(d => d.Id)
+				.Ignore(d => d.HotelId)
+				.Ignore(d => d.Hotel)
+				.Ignore(d => d.IsActive)
+				.Ignore(d => d.CreatedAt)
+				.Ignore(d => d.UpdatedAt);
 	}
 }

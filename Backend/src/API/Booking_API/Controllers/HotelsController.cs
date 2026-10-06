@@ -19,7 +19,7 @@ public class HotelsController(IHotelService hotelService) : ControllerBase
     [Authorize(Roles = ApplicationRoles.HotelOwner)]
     public async Task<IActionResult> Create([FromBody] CreateHotelRequest request, CancellationToken cancellationToken)
     {
-		if (!User.TryGetUserId(out var ownerId))
+		if (User.GetUserId() is not { } ownerId)
 			return Unauthorized();
 
 		var result = await _hotelService.CreateAsync(ownerId, request, cancellationToken);
@@ -28,7 +28,7 @@ public class HotelsController(IHotelService hotelService) : ControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> GetAll([FromQuery] GetHotelsRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> GetAll([FromBody] GetHotelsRequest request, CancellationToken cancellationToken)
     {
         var result = await _hotelService.GetAllAsync(request, cancellationToken);
 
@@ -45,10 +45,10 @@ public class HotelsController(IHotelService hotelService) : ControllerBase
 
     [HttpPut("{id:guid}")]
     [Authorize(Roles = HotelOwnerOrAdminRoles)]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateHotelRequest request, CancellationToken cancellationToken)
+    public async Task<IActionResult> Update([FromRoute]Guid id, [FromBody] UpdateHotelRequest request, CancellationToken cancellationToken)
     {
 
-		if (!User.TryGetUserId(out var actorId))
+		if (User.GetUserId() is not { } actorId)
 			return Unauthorized();
 		
         var isAdmin = User.IsInRole(ApplicationRoles.Admin);
@@ -60,9 +60,9 @@ public class HotelsController(IHotelService hotelService) : ControllerBase
 
 	[HttpPatch("{id:guid}/toggle-activation")]
 	[Authorize(Roles = HotelOwnerOrAdminRoles)]
-	public async Task<IActionResult> ToggleActivation(Guid id, CancellationToken cancellationToken)
+	public async Task<IActionResult> ToggleActivation([FromRoute]Guid id, CancellationToken cancellationToken)
 	{
-		if (!User.TryGetUserId(out var actorId))
+		if (User.GetUserId() is not { } actorId)
 			return Unauthorized();
 
 		var isAdmin = User.IsInRole(ApplicationRoles.Admin);

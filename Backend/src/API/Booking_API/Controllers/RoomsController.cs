@@ -4,67 +4,66 @@ using Booking.Application.Interfaces;
 using Booking.Infrastructure.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Claims;
 
-namespace Booking_API.Controllers;
+namespace Booking.Api.Controllers;
 
 [ApiController]
-[Route("api/rooms")]
+[Route("api")]
 public class RoomsController(IRoomService roomService) : ControllerBase
 {
-    private const string HotelOwnerOrAdminRoles = "HotelOwner,Admin";
+	private const string HotelOwnerOrAdminRoles = "HotelOwner,Admin";
 
-    private readonly IRoomService _roomService = roomService;
+	[HttpPost("hotels/{hotelId:guid}/rooms")]
+	[Authorize(Roles = HotelOwnerOrAdminRoles)]
+	public async Task<IActionResult> Create([FromRoute]Guid hotelId, [FromBody] CreateRoomRequest request, CancellationToken cancellationToken)
+	{
+		if (User.GetUserId() is not { } actorId)
+			return Unauthorized();
 
-    [HttpPost("/api/hotels/{hotelId:guid}/rooms")]
-    [Authorize(Roles = HotelOwnerOrAdminRoles)]
-    public async Task<IActionResult> Create(Guid hotelId, [FromBody] CreateRoomRequest request, CancellationToken cancellationToken)
-    {
-        var actorId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? Guid.Empty.ToString());
-        var isAdmin = User.IsInRole(ApplicationRoles.Admin);
+		var result = await roomService.CreateAsync(actorId, User.IsInRole(ApplicationRoles.Admin), hotelId, request, cancellationToken);
 
-        var result = await _roomService.CreateAsync(actorId, isAdmin, hotelId, request, cancellationToken);
+		return result.IsSuccess
+				? CreatedAtAction(nameof(GetById), new { id = result.Value.Id }, result.Value)
+				: result.ToProblem();
+	}
 
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
-    }
+	[HttpGet("hotels/{hotelId:guid}/rooms")]
+	public async Task<IActionResult> GetAll([FromRoute] Guid hotelId, CancellationToken cancellationToken)
+	{
+		var result = await roomService.GetByHotelAsync(hotelId, cancellationToken);
 
-    [HttpGet("/api/hotels/{hotelId:guid}/rooms")]
-    public async Task<IActionResult> GetAll(Guid hotelId, CancellationToken cancellationToken)
-    {
-        var result = await _roomService.GetByHotelAsync(hotelId, cancellationToken);
+		return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+	}
 
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
-    }
+	[HttpGet("rooms/{id:guid}")]
+	public async Task<IActionResult> GetById([FromRoute] Guid id, CancellationToken cancellationToken)
+	{
+		var result = await roomService.GetByIdAsync(id, cancellationToken);
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetById(Guid id, CancellationToken cancellationToken)
-    {
-        var result = await _roomService.GetByIdAsync(id, cancellationToken);
+		return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+	}
 
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
-    }
+	[HttpPut("rooms/{id:guid}")]
+	[Authorize(Roles = HotelOwnerOrAdminRoles)]
+	public async Task<IActionResult> Update([FromRoute] Guid id, [FromBody] UpdateRoomRequest request, CancellationToken cancellationToken)
+	{
+		if (User.GetUserId() is not { } actorId)
+			return Unauthorized();
 
-    [HttpPut("{id:guid}")]
-    [Authorize(Roles = HotelOwnerOrAdminRoles)]
-    public async Task<IActionResult> Update(Guid id, [FromBody] UpdateRoomRequest request, CancellationToken cancellationToken)
-    {
-        var actorId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? Guid.Empty.ToString());
-        var isAdmin = User.IsInRole(ApplicationRoles.Admin);
+		var result = await roomService.UpdateAsync(actorId, User.IsInRole(ApplicationRoles.Admin), id, request, cancellationToken);
 
-        var result = await _roomService.UpdateAsync(actorId, isAdmin, id, request, cancellationToken);
+		return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
+	}
 
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
-    }
+	[HttpPatch("rooms/{id:guid}/toggle-activation")]
+	[Authorize(Roles = HotelOwnerOrAdminRoles)]
+	public async Task<IActionResult> ToggleActivation([FromRoute] Guid id, CancellationToken cancellationToken)
+	{
+		if (User.GetUserId() is not { } actorId)
+			return Unauthorized();
 
-    [HttpDelete("{id:guid}")]
-    [Authorize(Roles = HotelOwnerOrAdminRoles)]
-    public async Task<IActionResult> Deactivate(Guid id, CancellationToken cancellationToken)
-    {
-        var actorId = Guid.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier) ?? Guid.Empty.ToString());
-        var isAdmin = User.IsInRole(ApplicationRoles.Admin);
+		var result = await roomService.ToggleActivationAsync(actorId, User.IsInRole(ApplicationRoles.Admin), id, cancellationToken);
 
-        var result = await _roomService.DeactivateAsync(actorId, isAdmin, id, cancellationToken);
-
-        return result.IsSuccess ? Ok(result.Value) : result.ToProblem();
-    }
+		return result.IsSuccess ? NoContent() : result.ToProblem();
+	}
 }

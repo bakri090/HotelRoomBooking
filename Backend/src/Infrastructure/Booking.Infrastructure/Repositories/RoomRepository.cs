@@ -17,10 +17,14 @@ public class RoomRepository : IRoomRepository
     public async Task<Room?> GetByIdAsync(Guid id, CancellationToken cancellationToken)
     {
         return await _dbContext.Rooms
-            .FirstOrDefaultAsync(r => r.Id == id && r.IsActive, cancellationToken);
+            .FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
     }
-
-    public async Task<List<Room>> GetActiveByHotelAsync(Guid hotelId, CancellationToken cancellationToken)
+	public async Task<Room?> GetByIdWithHotelAsync(Guid id, CancellationToken cancellationToken)
+	{
+		return await _dbContext.Rooms.Include(x =>x.Hotel)
+				.FirstOrDefaultAsync(r => r.Id == id, cancellationToken);
+	}
+	public async Task<List<Room>> GetActiveByHotelAsync(Guid hotelId, CancellationToken cancellationToken)
     {
         return await _dbContext.Rooms
             .AsNoTracking()
@@ -28,8 +32,14 @@ public class RoomRepository : IRoomRepository
             .OrderBy(r => r.RoomNumber)
             .ToListAsync(cancellationToken);
     }
-
-    public async Task AddAsync(Room room, CancellationToken cancellationToken)
+	public Task<bool> RoomNumberExistsAsync(Guid hotelId, string roomNumber, Guid? excludeRoomId, CancellationToken cancellationToken)
+			 => _dbContext.Rooms.AnyAsync(r =>
+					 r.HotelId == hotelId &&
+					 r.RoomNumber == roomNumber &&
+					 r.IsActive &&
+					 (excludeRoomId == null || r.Id != excludeRoomId),
+					 cancellationToken);
+	public async Task AddAsync(Room room, CancellationToken cancellationToken)
     {
         await _dbContext.Rooms.AddAsync(room);
     }
